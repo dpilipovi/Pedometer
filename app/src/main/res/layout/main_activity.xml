@@ -14,4 +14,16 @@
         android:layout_width="168dp"
         android:layout_height="wrap_content"
         />
+
+    <Button
+        android:id="@+id/start_button"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="Start"></Button>
+
+    <Button
+        android:id="@+id/stop_button"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="Stop"></Button>
 </LinearLayout>
