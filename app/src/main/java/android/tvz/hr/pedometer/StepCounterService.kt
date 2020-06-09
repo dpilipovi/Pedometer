@@ -19,13 +19,15 @@ class StepCounterService : Service() {
 
     companion object {
         const val BROADCAST_ACTION: String = "android.tvz.hr.pedometer.displaySteps"
+        var active = false
+        var stepCount: Int = 0
+
     }
 
     // Init notification
     var notification = NotificationCompat.Builder(this, "MYCHANNEL")
 
     private var magnitudePrevious = 0.0
-    private var stepCount: Int = 0
 
     lateinit var intent: Intent
 
@@ -40,6 +42,9 @@ class StepCounterService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         //initNotification()
+
+        // Set as active so it doesn't get started again
+        active = true
 
         val sensorManager =
             getSystemService(Context.SENSOR_SERVICE) as SensorManager

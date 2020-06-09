@@ -65,8 +65,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        startService(intent)
-        registerReceiver(broadcastReceiver, IntentFilter(StepCounterService.BROADCAST_ACTION))
+        //startService(intent)
+        //registerReceiver(broadcastReceiver, IntentFilter(StepCounterService.BROADCAST_ACTION))
+
+        if(!StepCounterService.active) {
+            startService(intent)
+        }
+
+        stepCount = StepCounterService.stepCount
+
 
     }
 
