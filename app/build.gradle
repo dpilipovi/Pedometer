@@ -41,9 +41,6 @@ dependencies {
     // Use if Kotlin user.
     kapt "com.github.agrosner.dbflow:processor:${dbflow_version}"
 
-    // Annotation Processor
-    // if only using Java, use this. If using Kotlin do NOT use this.
-    annotationProcessor "com.github.agrosner.dbflow:processor:${dbflow_version}"
 
 
     // core set of libraries
@@ -58,7 +55,7 @@ dependencies {
     implementation "com.github.agrosner.dbflow:reactive-streams:${dbflow_version}"
 
     // Kotlin Coroutines
-    implementation "com.github.agrosner.dbflow:coroutines:${dbflow_version}"
+   // implementation "com.github.agrosner.dbflow:coroutines:${dbflow_version}"
 
     // Android Architecture Components Paging Library Support
     implementation "com.github.agrosner.dbflow:paging:${dbflow_version}"

@@ -9,4 +9,4 @@ import java.sql.Date
 
 @Table(name = "Steps", database = StepDatabase::class)
 @Parcelize
-class Step(@PrimaryKey var id: Int = 0, var stepCount: Int = 0, var date: Date): Parcelable
+class Step(@PrimaryKey var id: Int, var stepCount: Int = 0, var date: Date): Parcelable
