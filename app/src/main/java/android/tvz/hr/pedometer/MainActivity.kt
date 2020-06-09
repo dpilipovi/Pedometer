@@ -15,6 +15,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.dbflow5.config.FlowConfig
+import com.dbflow5.config.FlowManager
 import kotlinx.android.synthetic.main.main_activity.*
 
 
@@ -29,10 +31,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
+        // Initialize DBFlow
+        FlowManager.init(
+            FlowConfig.builder(this)
+            .openDatabasesOnInit(true)
+            .build())
+
         val intent = Intent(this, StepCounterService::class.java)
 
         startService(intent)
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) run {
             val channel = NotificationChannel(
@@ -47,37 +54,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         notification()
-
-        /*
-        textView = findViewById(R.id.steps_count)
-        val sensorManager =
-            getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        val sensor =
-            sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        val stepDetector: SensorEventListener = object : SensorEventListener {
-            override fun onSensorChanged(sensorEvent: SensorEvent) {
-                if (sensorEvent != null) {
-                    val x_acceleration = sensorEvent.values[0]
-                    val y_acceleration = sensorEvent.values[1]
-                    val z_acceleration = sensorEvent.values[2]
-                    val Magnitude =
-                        Math.sqrt(x_acceleration * x_acceleration + y_acceleration * y_acceleration + (z_acceleration * z_acceleration).toDouble())
-                    val MagnitudeDelta = Magnitude - MagnitudePrevious
-                    MagnitudePrevious = Magnitude
-                    if (MagnitudeDelta > 6) {
-                        stepCount++
-                    }
-                    textView.setText(stepCount.toString())
-                }
-            }
-            override fun onAccuracyChanged(
-                sensor: Sensor,
-                i: Int
-            ) {
-            }
-        }
-        sensorManager.registerListener(stepDetector, sensor, SensorManager.SENSOR_DELAY_NORMAL)
-         */
     }
 
     var broadcastReceiver: BroadcastReceiver = (object : BroadcastReceiver() {

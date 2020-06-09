@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt' // only required for kotlin consumers.
+
+def dbflow_version = "5.0.0-alpha1"
 
 android {
     compileSdkVersion 29
@@ -33,4 +36,33 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    //DBFLOW
+    // Use if Kotlin user.
+    kapt "com.github.agrosner.dbflow:processor:${dbflow_version}"
+
+    // Annotation Processor
+    // if only using Java, use this. If using Kotlin do NOT use this.
+    annotationProcessor "com.github.agrosner.dbflow:processor:${dbflow_version}"
+
+
+    // core set of libraries
+    implementation "com.github.agrosner.dbflow:core:${dbflow_version}"
+    implementation "com.github.agrosner.dbflow:lib:${dbflow_version}"
+
+    // sql-cipher database encryption (optional)
+    implementation "com.github.agrosner.dbflow:sqlcipher:${dbflow_version}"
+    implementation "net.zetetic:android-database-sqlcipher:4.0.1@aar"
+
+    // RXJava 2 support
+    implementation "com.github.agrosner.dbflow:reactive-streams:${dbflow_version}"
+
+    // Kotlin Coroutines
+    implementation "com.github.agrosner.dbflow:coroutines:${dbflow_version}"
+
+    // Android Architecture Components Paging Library Support
+    implementation "com.github.agrosner.dbflow:paging:${dbflow_version}"
+
+    // adds generated content provider annotations + support.
+    implementation "com.github.agrosner.dbflow:contentprovider:${dbflow_version}"
 }
