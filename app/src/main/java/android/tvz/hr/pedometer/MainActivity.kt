@@ -1,13 +1,14 @@
 package android.tvz.hr.pedometer
 
+import android.content.BroadcastReceiver
 import android.content.Context
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import 	android.support.LocalBroadcastManager
+import android.widget.TextView
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,7 +18,19 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
-        textView = findViewById(R.id.steps_count)
+
+      textView = findViewById(R.id.steps_count)
+
+      LocalBroadcastManager.getInstance(this).registerReceiver(
+          object : BroadcastReceiver() {
+              override fun onReceive(context: Context?, intent: Intent) {
+                  val steps =
+                      intent.getIntExtra(MainService.STEP_COUNT, 0)
+                  textView.setText(stepCount.toString())
+              }
+          }, IntentFilter(MainService.ACTION_LOCATION_BROADCAST)
+      )
+        /*
         val sensorManager =
             getSystemService(Context.SENSOR_SERVICE) as SensorManager
         val sensor =
@@ -45,10 +58,20 @@ class MainActivity : AppCompatActivity() {
             ) {
             }
         }
-        sensorManager.registerListener(stepDetector, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+        sensorManager.registerListener(stepDetector, sensor, SensorManager.SENSOR_DELAY_NORMAL)*/
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startService(Intent(this, MainService::class.java))
     }
 
     override fun onPause() {
+        super.onPause()
+        stopService(Intent(this, MainService::class.java))
+    }
+
+  /*  override fun onPause() {
         super.onPause()
         val sharedPreferences =
             getPreferences(Context.MODE_PRIVATE)
@@ -73,5 +96,5 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences =
             getPreferences(Context.MODE_PRIVATE)
         stepCount = sharedPreferences.getInt("stepCount", 0)
-    }
+    }*/
 }
