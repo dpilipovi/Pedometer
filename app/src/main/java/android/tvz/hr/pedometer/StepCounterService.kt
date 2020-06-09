@@ -88,35 +88,6 @@ class StepCounterService : Service() {
     }
 
     override fun onBind(intent: Intent): IBinder? {
-        /*val sensorManager =
-            getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        val sensor =
-            sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        val stepDetector: SensorEventListener = object : SensorEventListener {
-            override fun onSensorChanged(sensorEvent: SensorEvent) {
-                if (sensorEvent != null) {
-                    val x_acceleration = sensorEvent.values[0]
-                    val y_acceleration = sensorEvent.values[1]
-                    val z_acceleration = sensorEvent.values[2]
-                    val magnitude =
-                        Math.sqrt(x_acceleration * x_acceleration + y_acceleration * y_acceleration + (z_acceleration * z_acceleration).toDouble())
-                    val magnitudeDelta = magnitude - magnitudePrevious
-                    magnitudePrevious = magnitude
-                    if (magnitudeDelta > 6) {
-                        stepCount++
-
-                    }
-                }
-            }
-
-            override fun onAccuracyChanged(
-                sensor: Sensor,
-                i: Int
-            ) {
-            }
-        }
-
-        sensorManager.registerListener(stepDetector, sensor, SensorManager.SENSOR_DELAY_NORMAL)*/
         return null
     }
 
