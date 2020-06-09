@@ -1,16 +1,26 @@
 package android.tvz.hr.pedometer
 
+
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import 	android.support.LocalBroadcastManager
+import android.util.Log
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import kotlinx.android.synthetic.main.main_activity.*
 
 
 class MainActivity : AppCompatActivity() {
+
+    private val TAG: String = "MainActivityTag"
 
     private lateinit var textView: TextView
     private var MagnitudePrevious = 0.0
@@ -19,18 +29,27 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-      textView = findViewById(R.id.steps_count)
+        val intent = Intent(this, StepCounterService::class.java)
 
-      LocalBroadcastManager.getInstance(this).registerReceiver(
-          object : BroadcastReceiver() {
-              override fun onReceive(context: Context?, intent: Intent) {
-                  val steps =
-                      intent.getIntExtra(MainService.STEP_COUNT, 0)
-                  textView.setText(stepCount.toString())
-              }
-          }, IntentFilter(MainService.ACTION_LOCATION_BROADCAST)
-      )
+        startService(intent)
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) run {
+            val channel = NotificationChannel(
+                "MYCHANNEL",
+                "Notification channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            channel.description = "Channel Description"
+            val man = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            man.createNotificationChannel(channel)
+
+        }
+
+        notification()
+
         /*
+        textView = findViewById(R.id.steps_count)
         val sensorManager =
             getSystemService(Context.SENSOR_SERVICE) as SensorManager
         val sensor =
@@ -51,50 +70,64 @@ class MainActivity : AppCompatActivity() {
                     textView.setText(stepCount.toString())
                 }
             }
-
             override fun onAccuracyChanged(
                 sensor: Sensor,
                 i: Int
             ) {
             }
         }
-        sensorManager.registerListener(stepDetector, sensor, SensorManager.SENSOR_DELAY_NORMAL)*/
+        sensorManager.registerListener(stepDetector, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+         */
     }
+
+    var broadcastReceiver: BroadcastReceiver = (object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            updateUI(intent!!)
+            notification()
+        }
+
+    })
 
     override fun onResume() {
         super.onResume()
-        startService(Intent(this, MainService::class.java))
+        startService(intent)
+        registerReceiver(broadcastReceiver, IntentFilter(StepCounterService.BROADCAST_ACTION))
+
     }
 
     override fun onPause() {
         super.onPause()
-        stopService(Intent(this, MainService::class.java))
+        unregisterReceiver(broadcastReceiver)
+        stopService(intent)
     }
 
-  /*  override fun onPause() {
-        super.onPause()
-        val sharedPreferences =
-            getPreferences(Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.clear()
-        editor.putInt("stepCount", stepCount)
-        editor.apply()
+    private fun updateUI(intent: Intent) {
+        val counter: Int = intent.getIntExtra("counter",  0)
+        val time: String = intent.getStringExtra("time")
+
+        stepCount = counter;
+
+        Log.d(TAG, counter.toString())
+        Log.d(TAG, time)
+
+        steps_count.text = counter.toString()
     }
 
-    override fun onStop() {
-        super.onStop()
-        val sharedPreferences =
-            getPreferences(Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.clear()
-        editor.putInt("stepCount", stepCount)
-        editor.apply()
-    }
+    private fun notification()
+    {
 
-    override fun onResume() {
-        super.onResume()
-        val sharedPreferences =
-            getPreferences(Context.MODE_PRIVATE)
-        stepCount = sharedPreferences.getInt("stepCount", 0)
-    }*/
+
+        val notification = NotificationCompat.Builder(this, "MYCHANNEL")
+            .setContentTitle("Pedometer")
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentText("Steps: "+ stepCount)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setOnlyAlertOnce(true)
+            .setOngoing(true)
+
+        with(NotificationManagerCompat.from(this)) {
+            notify(172, notification.build())
+        }
+
+    }
 }
