@@ -47,7 +47,7 @@ class StepCountService : Service(), SensorEventListener {
         // --------------------------------------------------------------------------- \\
         // ___ (2) create/instantiate intent. ___ \\
         // Instantiate the intent declared globally, and pass "BROADCAST_ACTION" to the constructor of the intent.
-        intent = Intent("android.tvz.hr.pedometer.StepService")
+        intent = Intent("android.tvz.hr.pedometer.StepCountService")
         // ___________________________________________________________________________ \\
     }
 

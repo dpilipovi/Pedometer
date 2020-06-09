@@ -1,15 +1,22 @@
 package android.tvz.hr.pedometer
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.main_activity.*
 
 class MainActivity : AppCompatActivity() {
+
+    private val TAG: String = "MainActivityTag"
 
     private lateinit var textView: TextView
     private var MagnitudePrevious = 0.0
@@ -17,6 +24,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
+
+        val intent = Intent(this, StepCounterService::class.java)
+
+        /*
         textView = findViewById(R.id.steps_count)
         val sensorManager =
             getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -46,32 +57,36 @@ class MainActivity : AppCompatActivity() {
             }
         }
         sensorManager.registerListener(stepDetector, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+
+         */
+    }
+
+    var broadcastReceiver: BroadcastReceiver = (object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            updateUI(intent!!)
+        }
+
+    })
+
+    override fun onResume() {
+        super.onResume()
+        startService(intent)
+        registerReceiver(broadcastReceiver, IntentFilter(StepCounterService.BROADCAST_ACTION))
     }
 
     override fun onPause() {
         super.onPause()
-        val sharedPreferences =
-            getPreferences(Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.clear()
-        editor.putInt("stepCount", stepCount)
-        editor.apply()
+        unregisterReceiver(broadcastReceiver)
+        stopService(intent)
     }
 
-    override fun onStop() {
-        super.onStop()
-        val sharedPreferences =
-            getPreferences(Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.clear()
-        editor.putInt("stepCount", stepCount)
-        editor.apply()
-    }
+    private fun updateUI(intent: Intent) {
+        val counter: Int = intent.getIntExtra("counter",  0)
+        val time: String = intent.getStringExtra("time")
 
-    override fun onResume() {
-        super.onResume()
-        val sharedPreferences =
-            getPreferences(Context.MODE_PRIVATE)
-        stepCount = sharedPreferences.getInt("stepCount", 0)
+        Log.d(TAG, counter.toString())
+        Log.d(TAG, time)
+
+        steps_count.text = counter.toString()
     }
 }
