@@ -54,7 +54,7 @@ class StepActivity : AppCompatActivity() {
 
         // ___ unregister receiver & stop service ___ \\
         stopServiceBtn =
-            findViewById<View>(R.id.start_button) as Button
+            findViewById<View>(R.id.stop_button) as Button
         stopServiceBtn!!.setOnClickListener {
             if (!isServiceStopped) {
                 // call unregisterReceiver - to stop listening for broadcasts.
