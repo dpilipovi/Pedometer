@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity() {
     private val TAG: String = "MainActivityTag"
 
     private lateinit var textView: TextView
-    private var MagnitudePrevious = 0.0
     private var stepCount = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,10 +55,10 @@ class MainActivity : AppCompatActivity() {
         notification()
     }
 
-    var broadcastReceiver: BroadcastReceiver = (object : BroadcastReceiver() {
+    private var broadcastReceiver: BroadcastReceiver = (object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             updateUI(intent!!)
-            notification()
+            //notification()
         }
 
     })
@@ -73,8 +72,19 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        unregisterReceiver(broadcastReceiver)
-        stopService(intent)
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        // Maybe do something
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        //unregisterReceiver(broadcastReceiver)
+        //stopService(intent)
     }
 
     private fun updateUI(intent: Intent) {
@@ -91,12 +101,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun notification()
     {
-
-
         val notification = NotificationCompat.Builder(this, "MYCHANNEL")
             .setContentTitle("Pedometer")
             .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentText("Steps: "+ stepCount)
+            .setContentText("Steps: $stepCount")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setOnlyAlertOnce(true)
             .setOngoing(true)

@@ -10,6 +10,9 @@ import android.hardware.SensorManager
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.Lifecycle
 import java.util.*
 
 class StepCounterService : Service() {
@@ -17,6 +20,9 @@ class StepCounterService : Service() {
     companion object {
         const val BROADCAST_ACTION: String = "android.tvz.hr.pedometer.displaySteps"
     }
+
+    // Init notification
+    var notification = NotificationCompat.Builder(this, "MYCHANNEL")
 
     private var magnitudePrevious = 0.0
     private var stepCount: Int = 0
@@ -32,6 +38,8 @@ class StepCounterService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+        //initNotification()
 
         val sensorManager =
             getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -50,6 +58,7 @@ class StepCounterService : Service() {
                     if (magnitudeDelta > 6) {
                         stepCount++
 
+                        initNotification()
                     }
                 }
             }
@@ -72,14 +81,14 @@ class StepCounterService : Service() {
 
     private var sendUpdatesToUI: Runnable = (object : Runnable {
         override fun run() {
-            DisplayLoggingInfo()
+            displayLoggingInfo()
 
             handler.postDelayed(this, 1000)
         }
 
     })
 
-    private fun DisplayLoggingInfo() {
+    private fun displayLoggingInfo() {
         Log.d("StepsCount", stepCount.toString())
 
         intent.putExtra("time", Date().toLocaleString())
@@ -95,6 +104,28 @@ class StepCounterService : Service() {
         handler.removeCallbacks(sendUpdatesToUI)
         super.onDestroy()
     }
+
+    private fun initNotification()
+    {
+        notification = NotificationCompat.Builder(this, "MYCHANNEL")
+            .setContentTitle("Pedometer")
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentText("Steps: $stepCount")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setOnlyAlertOnce(true)
+            .setOngoing(true)
+
+        with(NotificationManagerCompat.from(this)) {
+            notify(172, notification.build())
+        }
+
+    }
+
+    override fun stopService(name: Intent?): Boolean {
+        return super.stopService(name)
+    }
+
+
 
 
 }
