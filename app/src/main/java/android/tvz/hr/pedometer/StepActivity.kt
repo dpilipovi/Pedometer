@@ -43,7 +43,7 @@ class StepActivity : AppCompatActivity() {
         startServiceBtn =
             findViewById<View>(R.id.start_button) as Button
         startServiceBtn!!.setOnClickListener { // start Service.
-            startService(Intent(baseContext, tepCountService::class.java))
+            startService(Intent(baseContext, StepCountService::class.java))
             // register our BroadcastReceiver by passing in an IntentFilter. * identifying the message that is broadcasted by using static string "BROADCAST_ACTION".
             registerReceiver(
                 broadcastReceiver,
