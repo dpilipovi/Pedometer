@@ -1,8 +1,10 @@
 package android.tvz.hr.pedometer
 
 
+import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -17,7 +19,9 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import com.dbflow5.config.FlowConfig
 import com.dbflow5.config.FlowManager
+import com.dbflow5.config.FlowManager.context
 import kotlinx.android.synthetic.main.main_activity.*
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,9 +33,14 @@ class MainActivity : AppCompatActivity() {
     private val TAG: String = "MainActivityTag"
     private lateinit var textView: TextView
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
+
+        StepCounterService.step.id = StepCounterService.id_counter
+        StepCounterService.step.stepCount = 0
+        StepCounterService.step.date = Date()
 
         supportFragmentManager.beginTransaction().replace(R.id.fragment_container, HomeFragment()).commit()
 
@@ -86,6 +95,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         notification()
+
+
     }
 
     override fun onResume() {
@@ -125,7 +136,7 @@ class MainActivity : AppCompatActivity() {
         val notification = NotificationCompat.Builder(this, "MYCHANNEL")
             .setContentTitle("Pedometer")
             .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentText("Steps: ${StepCounterService.stepCount}")
+            .setContentText("Steps: ${StepCounterService.step.stepCount}")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setOnlyAlertOnce(true)
             .setOngoing(true)

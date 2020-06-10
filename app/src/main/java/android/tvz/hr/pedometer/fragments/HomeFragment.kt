@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : Fragment() {
 
-    private var stepCount: Int = StepCounterService.stepCount
+    private var stepCount: Int = StepCounterService.step.stepCount
 
     private var broadcastReceiver: BroadcastReceiver = (object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {

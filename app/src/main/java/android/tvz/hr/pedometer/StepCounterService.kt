@@ -1,6 +1,8 @@
 package android.tvz.hr.pedometer
 
+import android.app.AlarmManager
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -10,16 +12,21 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Handler
 import android.os.IBinder
+import android.tvz.hr.pedometer.Step_Table.id
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.dbflow5.config.FlowManager
+import com.dbflow5.config.FlowManager.context
+import java.util.*
 
 class StepCounterService : Service() {
 
     companion object {
         const val BROADCAST_ACTION: String = "android.tvz.hr.pedometer.displaySteps"
         var active = false
-        var stepCount: Int = 0
-
+      //  var stepCount: Int = 0
+        var id_counter: Int = 1
+        lateinit var step: Step
     }
 
     // Init notification
@@ -31,10 +38,44 @@ class StepCounterService : Service() {
 
     var handler: Handler = Handler()
 
+    private var alarmMgr: AlarmManager? = null
+    private lateinit var alarmPendingIntent: PendingIntent
+    private lateinit var alarmIntent: Intent
+
     override fun onCreate() {
         super.onCreate()
 
+       /* step.id = id_counter
+        step.stepCount = 0
+        step.date = Date()*/
+
         intent = Intent(BROADCAST_ACTION)
+
+        alarmMgr = FlowManager.context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmIntent = Intent(FlowManager.context, RefreshReceiver::class.java)/*.let { intent ->
+            PendingIntent.getBroadcast(context, 0, intent, 0)
+        }*/
+        alarmIntent.putExtra("Step", step)
+
+        alarmPendingIntent = PendingIntent.getBroadcast(context,0,alarmIntent,0)
+
+        // Set the alarm to start at approximately 2:00 p.m.
+        val calendar: Calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 0)
+            //set(Calendar.HOUR, 0) prolly i ovo radi
+            set(Calendar.MINUTE,0)
+        }
+
+        // With setInexactRepeating(), you have to use one of the AlarmManager interval
+        // constants--in this case, AlarmManager.INTERVAL_DAY.
+        alarmMgr?.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            alarmPendingIntent
+        )
+
 
     }
 
@@ -63,7 +104,7 @@ class StepCounterService : Service() {
                     val magnitudeDelta = magnitude - magnitudePrevious
                     magnitudePrevious = magnitude
                     if (magnitudeDelta > 6) {
-                        stepCount++
+                        step.stepCount++
 
                         initNotification()
                     }
@@ -101,7 +142,7 @@ class StepCounterService : Service() {
 
     private fun displayLoggingInfo() {
 
-        intent.putExtra("counter", stepCount)
+        intent.putExtra("counter", step.stepCount)
         sendBroadcast(intent)
     }
 
@@ -119,7 +160,7 @@ class StepCounterService : Service() {
         notification = NotificationCompat.Builder(this, "MYCHANNEL")
             .setContentTitle("Pedometer")
             .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentText("Steps: $stepCount")
+            .setContentText("Steps: $step.stepCount")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setOnlyAlertOnce(true)
             .setOngoing(true)

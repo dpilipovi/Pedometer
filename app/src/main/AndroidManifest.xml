@@ -26,7 +26,8 @@
             </intent-filter>
         </activity>
 
-        <!--<service android:name=".StepCountService" />-->
+        <receiver android:name=".RefreshReceiver" >
+        </receiver>
     </application>
 
 </manifest>
