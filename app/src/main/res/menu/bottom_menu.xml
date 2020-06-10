@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_main"
+        android:icon="@drawable/ic_baseline_directions_walk_24"
+        android:title="Current steps"
+        />
+
+    <item
+        android:id="@+id/menu_achievements"
+        android:icon="@drawable/ic_baseline_star_24"
+        android:title="Achievements"/>
+
+    <item
+        android:id="@+id/menu_history"
+        android:icon="@drawable/ic_baseline_history_24"
+        android:title="Steps history"
+        />
+</menu>
