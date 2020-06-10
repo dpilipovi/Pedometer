@@ -20,7 +20,6 @@ class HomeFragment : Fragment() {
     private var broadcastReceiver: BroadcastReceiver = (object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             updateUI(intent!!)
-            //notification()
         }
     })
 
@@ -33,7 +32,6 @@ class HomeFragment : Fragment() {
         broadcastReceiver = (object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 updateUI(intent!!)
-                //notification()
             }
         })
 
@@ -54,8 +52,11 @@ class HomeFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+
     }
 
+    // method called from broadcast receiver
+    // gets called when accelerometer detects a step
     private fun updateUI(intent: Intent) {
         val counter: Int = intent.getIntExtra("counter",  0)
 
