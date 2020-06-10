@@ -3,6 +3,7 @@ package android.tvz.hr.pedometer.fragments
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.tvz.hr.pedometer.R
 import android.tvz.hr.pedometer.StepCounterService
@@ -37,6 +38,22 @@ class HomeFragment : Fragment() {
         })
 
         return inflater.inflate(R.layout.fragment_home, container, false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        context!!.registerReceiver(broadcastReceiver, IntentFilter(StepCounterService.BROADCAST_ACTION))
+
+        circular_steps_progress.points = stepCount
+    }
+
+    override fun onPause() {
+        super.onPause()
+        context?.unregisterReceiver(broadcastReceiver)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     private fun updateUI(intent: Intent) {

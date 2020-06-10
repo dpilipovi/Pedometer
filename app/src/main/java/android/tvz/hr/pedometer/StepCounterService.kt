@@ -12,7 +12,6 @@ import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import java.util.*
 
 class StepCounterService : Service() {
 
@@ -36,10 +35,12 @@ class StepCounterService : Service() {
         super.onCreate()
 
         intent = Intent(BROADCAST_ACTION)
+
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
+        super.onStartCommand(intent, flags, startId)
         //initNotification()
 
         // Set as active so it doesn't get started again
@@ -78,10 +79,10 @@ class StepCounterService : Service() {
 
         sensorManager.registerListener(stepDetector, sensor, SensorManager.SENSOR_DELAY_NORMAL)
 
-        if(MainActivity.active) {
-            handler.removeCallbacks(sendUpdatesToUI)
-            handler.postDelayed(sendUpdatesToUI, 1000)
-        }
+
+        handler.removeCallbacks(sendUpdatesToUI)
+        handler.postDelayed(sendUpdatesToUI, 1000)
+
 
 
        // return super.onStartCommand(intent, flags, startId)
@@ -91,6 +92,7 @@ class StepCounterService : Service() {
     private var sendUpdatesToUI: Runnable = (object : Runnable {
         override fun run() {
             displayLoggingInfo()
+            initNotification()
 
             handler.postDelayed(this, 1000)
         }
@@ -98,7 +100,6 @@ class StepCounterService : Service() {
     })
 
     private fun displayLoggingInfo() {
-        Log.d("StepsCount", stepCount.toString())
 
         intent.putExtra("counter", stepCount)
         sendBroadcast(intent)

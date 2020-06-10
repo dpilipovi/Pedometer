@@ -3,7 +3,6 @@ package android.tvz.hr.pedometer
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -11,7 +10,6 @@ import android.os.Bundle
 import android.tvz.hr.pedometer.fragments.AchievementsFragment
 import android.tvz.hr.pedometer.fragments.HistoryFragment
 import android.tvz.hr.pedometer.fragments.HomeFragment
-import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -44,12 +42,15 @@ class MainActivity : AppCompatActivity() {
              when(item.itemId) {
                  R.id.menu_main -> {
                      selectedFragment = HomeFragment()
+                     true
                  }
                  R.id.menu_achievements -> {
                      selectedFragment = AchievementsFragment()
+                     true
                  }
                  R.id.menu_history -> {
                      selectedFragment = HistoryFragment()
+                     true
                  }
                  else -> false
              }
@@ -79,19 +80,20 @@ class MainActivity : AppCompatActivity() {
             val man = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             man.createNotificationChannel(channel)
 
+
+
+
         }
 
         notification()
     }
-
-
 
     override fun onResume() {
         super.onResume()
         active = true
 
         //startService(intent)
-        //registerReceiver(broadcastReceiver, IntentFilter(StepCounterService.BROADCAST_ACTION))
+        //
 
         if(!StepCounterService.active) {
             startService(intent)
