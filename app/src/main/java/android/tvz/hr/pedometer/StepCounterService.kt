@@ -1,5 +1,6 @@
 package android.tvz.hr.pedometer
 
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -10,16 +11,22 @@ import android.hardware.SensorManager
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import java.util.*
 
 class StepCounterService : Service() {
 
     companion object {
         const val BROADCAST_ACTION: String = "android.tvz.hr.pedometer.displaySteps"
+        var active = false
+        var stepCount: Int = 0
+
     }
 
+    // Init notification
+    private var notification = NotificationCompat.Builder(this, "MYCHANNEL")
+
     private var magnitudePrevious = 0.0
-    private var stepCount: Int = 0
 
     lateinit var intent: Intent
 
@@ -32,6 +39,13 @@ class StepCounterService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+        //initNotification()
+
+        // Set as active so it doesn't get started again
+        active = true
+
+        initNotification()
 
         val sensorManager =
             getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -50,6 +64,7 @@ class StepCounterService : Service() {
                     if (magnitudeDelta > 6) {
                         stepCount++
 
+                        initNotification()
                     }
                 }
             }
@@ -63,8 +78,11 @@ class StepCounterService : Service() {
 
         sensorManager.registerListener(stepDetector, sensor, SensorManager.SENSOR_DELAY_NORMAL)
 
-        handler.removeCallbacks(sendUpdatesToUI)
-        handler.postDelayed(sendUpdatesToUI, 1000)
+        if(MainActivity.active) {
+            handler.removeCallbacks(sendUpdatesToUI)
+            handler.postDelayed(sendUpdatesToUI, 1000)
+        }
+
 
        // return super.onStartCommand(intent, flags, startId)
         return START_STICKY
@@ -72,17 +90,16 @@ class StepCounterService : Service() {
 
     private var sendUpdatesToUI: Runnable = (object : Runnable {
         override fun run() {
-            DisplayLoggingInfo()
+            displayLoggingInfo()
 
             handler.postDelayed(this, 1000)
         }
 
     })
 
-    private fun DisplayLoggingInfo() {
+    private fun displayLoggingInfo() {
         Log.d("StepsCount", stepCount.toString())
 
-        intent.putExtra("time", Date().toLocaleString())
         intent.putExtra("counter", stepCount)
         sendBroadcast(intent)
     }
@@ -96,5 +113,31 @@ class StepCounterService : Service() {
         super.onDestroy()
     }
 
+    private fun initNotification()
+    {
+        notification = NotificationCompat.Builder(this, "MYCHANNEL")
+            .setContentTitle("Pedometer")
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentText("Steps: $stepCount")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setOnlyAlertOnce(true)
+            .setOngoing(true)
+
+        val notificationManager: NotificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        notificationManager.notify(172, notification.build())
+
+        /*
+        with(NotificationManagerCompat.from(this)) {
+            notify(172, notification.build())
+        }
+
+         */
+
+    }
+
+    override fun stopService(name: Intent?): Boolean {
+        return super.stopService(name)
+    }
 
 }

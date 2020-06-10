@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:swagpoints="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.dualcores.swagpoints.SwagPoints
+        android:id="@+id/circular_steps_progress"
+        android:layout_width="match_parent"
+        android:layout_height="340dp"
+        android:layout_gravity="center"
+        android:padding="64dp"
+        swagpoints:min="0"
+        swagpoints:max="1000"
+        swagpoints:step="1"
+        swagpoints:points="100"
+        swagpoints:progressColor="#ff0000"
+        swagpoints:progressWidth="12dp"
+        swagpoints:arcColor="#00ff00"
+        swagpoints:arcWidth="8dp"
+        swagpoints:textSize="72sp"
+        swagpoints:textColor="#000000"
+        swagpoints:indicatorIcon="@drawable/ic_baseline_history_24"
+        swagpoints:enabled="false"
+        />
+
+</LinearLayout>
