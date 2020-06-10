@@ -14,6 +14,7 @@
         swagpoints:min="0"
         swagpoints:max="1000"
         swagpoints:step="1"
+        swagpoints:points="100"
         swagpoints:progressColor="#ff0000"
         swagpoints:progressWidth="12dp"
         swagpoints:arcColor="#00ff00"
@@ -22,12 +23,6 @@
         swagpoints:textColor="#000000"
         swagpoints:indicatorIcon="@drawable/ic_baseline_history_24"
         swagpoints:enabled="false"
-        />
-
-    <TextView
-        android:id="@+id/steps_count"
-        android:layout_width="168dp"
-        android:layout_height="wrap_content"
         />
 
 </LinearLayout>

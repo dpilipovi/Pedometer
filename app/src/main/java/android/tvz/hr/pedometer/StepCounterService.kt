@@ -1,5 +1,6 @@
 package android.tvz.hr.pedometer
 
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -11,8 +12,6 @@ import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.Lifecycle
 import java.util.*
 
 class StepCounterService : Service() {
@@ -25,7 +24,7 @@ class StepCounterService : Service() {
     }
 
     // Init notification
-    var notification = NotificationCompat.Builder(this, "MYCHANNEL")
+    private var notification = NotificationCompat.Builder(this, "MYCHANNEL")
 
     private var magnitudePrevious = 0.0
 
@@ -45,6 +44,8 @@ class StepCounterService : Service() {
 
         // Set as active so it doesn't get started again
         active = true
+
+        initNotification()
 
         val sensorManager =
             getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -99,7 +100,6 @@ class StepCounterService : Service() {
     private fun displayLoggingInfo() {
         Log.d("StepsCount", stepCount.toString())
 
-        intent.putExtra("time", Date().toLocaleString())
         intent.putExtra("counter", stepCount)
         sendBroadcast(intent)
     }
@@ -123,17 +123,21 @@ class StepCounterService : Service() {
             .setOnlyAlertOnce(true)
             .setOngoing(true)
 
+        val notificationManager: NotificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        notificationManager.notify(172, notification.build())
+
+        /*
         with(NotificationManagerCompat.from(this)) {
             notify(172, notification.build())
         }
+
+         */
 
     }
 
     override fun stopService(name: Intent?): Boolean {
         return super.stopService(name)
     }
-
-
-
 
 }

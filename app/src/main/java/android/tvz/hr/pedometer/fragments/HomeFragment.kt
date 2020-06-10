@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : Fragment() {
 
-    private var stepCount = StepCounterService.stepCount
+    private var stepCount: Int = StepCounterService.stepCount
 
     private var broadcastReceiver: BroadcastReceiver = (object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -44,6 +44,6 @@ class HomeFragment : Fragment() {
 
         stepCount = counter;
 
-        steps_count.text = counter.toString()
+        circular_steps_progress.points = stepCount
     }
 }
