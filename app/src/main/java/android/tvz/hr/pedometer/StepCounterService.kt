@@ -79,13 +79,9 @@ class StepCounterService : Service() {
 
         sensorManager.registerListener(stepDetector, sensor, SensorManager.SENSOR_DELAY_NORMAL)
 
-
         handler.removeCallbacks(sendUpdatesToUI)
         handler.postDelayed(sendUpdatesToUI, 1000)
 
-
-
-       // return super.onStartCommand(intent, flags, startId)
         return START_STICKY
     }
 
