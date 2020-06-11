@@ -3,4 +3,30 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+
+    <color name="mediumAquamarine">#56E39F</color>
+    <color name="oceanGreen">#59C9A5</color>
+    <color name="feldgrau">#5B6C5D</color>
+    <color name="blackCoffee">#3B2C35</color>
+    <color name="darkPurple">#2A1F2D</color>
 </resources>
+
+
+<!--
+COLOR PALETTE
+
+https://coolors.co/56e39f-59c9a5-5b6c5d-3b2c35-2a1f2d
+
+56E39F
+59C9A5
+5B6C5D
+3B2C35
+2A1F2D
+
+OR
+
+
+https://coolors.co/ea526f-070600-f7f7ff-23b5d3-279af1
+
+
+-->
