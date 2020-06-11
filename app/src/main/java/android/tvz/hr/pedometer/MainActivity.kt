@@ -85,13 +85,9 @@ class MainActivity : AppCompatActivity() {
             val man = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             man.createNotificationChannel(channel)
 
-
-
-
         }
 
         notification()
-
 
     }
 

@@ -13,6 +13,7 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.dbflow5.config.FlowManager.context
 import java.util.*
@@ -26,6 +27,13 @@ class StepCounterService : Service() {
       //  var stepCount: Int = 0
         var id_counter: Int = 1
         val step: Step = Step(id_counter,0, Date())
+
+        val calendar: Calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 17)
+            //set(Calendar.HOUR, 0) prolly i ovo radi
+            set(Calendar.MINUTE,21)
+        }
     }
 
     // Init notification
@@ -44,33 +52,17 @@ class StepCounterService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-       /* step.id = id_counter
-        step.stepCount = 0
-        step.date = Date()*/
-
         intent = Intent(BROADCAST_ACTION)
 
         alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmIntent = Intent(context, RefreshReceiver::class.java)/*.let { intent ->
-            PendingIntent.getBroadcast(context, 0, intent, 0)
-        }*/
-       /* alarmIntent.putExtra("Step", step)
-        Log.d("step u intentu",step.toString())
+        alarmIntent = Intent(context, RefreshReceiver::class.java)
 
-        alarmPendingIntent = PendingIntent.getBroadcast*/
+        val stepBundle = Bundle()
+        stepBundle.putParcelable("Step", step)
 
-        updateIntent()
+        alarmIntent.putExtra("Step", stepBundle)
+        alarmPendingIntent = PendingIntent.getBroadcast(context,0,alarmIntent,0)
 
-        // Set the alarm to start at approximately 2:00 p.m.
-        val calendar: Calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 0)
-            //set(Calendar.HOUR, 0) prolly i ovo radi
-           // set(Calendar.MINUTE,56)
-        }
-
-        // With setInexactRepeating(), you have to use one of the AlarmManager interval
-        // constants--in this case, AlarmManager.INTERVAL_DAY.
         alarmMgr?.setInexactRepeating(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
@@ -78,13 +70,11 @@ class StepCounterService : Service() {
             alarmPendingIntent
         )
 
-
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         super.onStartCommand(intent, flags, startId)
-        //initNotification()
 
         // Set as active so it doesn't get started again
         active = true
@@ -170,12 +160,6 @@ class StepCounterService : Service() {
 
         notificationManager.notify(172, notification.build())
 
-        /*
-        with(NotificationManagerCompat.from(this)) {
-            notify(172, notification.build())
-        }
-
-         */
 
     }
 
@@ -186,13 +170,22 @@ class StepCounterService : Service() {
     private fun updateIntent()
     {
 
+        alarmMgr?.cancel(alarmPendingIntent)
+
+        Log.d("Step u intentu",step.toString())
         val stepBundle = Bundle()
         stepBundle.putParcelable("Step", step)
 
-        alarmIntent.putExtra("Step", stepBundle)
-       // Log.d("step u intentu",step.toString())
-
+        alarmIntent.replaceExtras(stepBundle)
         alarmPendingIntent = PendingIntent.getBroadcast(context,0,alarmIntent,0)
+
+
+        alarmMgr?.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            alarmPendingIntent
+        )
     }
 
 }
