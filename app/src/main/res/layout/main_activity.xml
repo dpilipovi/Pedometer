@@ -19,7 +19,9 @@
         android:layout_height="wrap_content"
         app:menu="@menu/bottom_menu"
         android:layout_alignParentBottom="true"
-        android:background="?android:attr/windowBackground"
+        style="@style/BottomNavigation"
+        app:itemIconTint="@color/bottom_buttoon"
+        app:itemTextColor="@color/bottom_buttoon"
     />
 
 </RelativeLayout>

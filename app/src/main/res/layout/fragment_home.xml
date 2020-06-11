@@ -3,7 +3,8 @@
     xmlns:swagpoints="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/richBlack">
 
     <com.dualcores.swagpoints.SwagPoints
         android:id="@+id/circular_steps_progress"
@@ -14,15 +15,15 @@
         swagpoints:min="0"
         swagpoints:max="1000"
         swagpoints:step="1"
-        swagpoints:points="100"
-        swagpoints:progressColor="#ff0000"
+        swagpoints:points="1"
+        swagpoints:progressColor="@color/paradisePink"
         swagpoints:progressWidth="12dp"
-        swagpoints:arcColor="#00ff00"
-        swagpoints:arcWidth="8dp"
-        swagpoints:textSize="72sp"
-        swagpoints:textColor="#000000"
-        swagpoints:indicatorIcon="@drawable/ic_baseline_history_24"
+        swagpoints:arcColor="@color/ghostWhite"
+        swagpoints:arcWidth="4dp"
+        swagpoints:textSize="48sp"
+        swagpoints:textColor="@color/ghostWhite"
         swagpoints:enabled="false"
+        swagpoints:clockwise="true"
         />
 
 </LinearLayout>
