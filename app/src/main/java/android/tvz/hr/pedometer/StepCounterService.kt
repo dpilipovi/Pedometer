@@ -28,16 +28,15 @@ class StepCounterService : Service() {
         var id_counter: Int = 1
         val step: Step = Step(id_counter,0, Date())
 
-        val calendar: Calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 17)
-            //set(Calendar.HOUR, 0) prolly i ovo radi
-            set(Calendar.MINUTE,21)
-        }
+
     }
 
-    // Init notification
-    private var notification = NotificationCompat.Builder(this, "MYCHANNEL")
+    val calendar: Calendar = Calendar.getInstance().apply {
+        timeInMillis = System.currentTimeMillis()
+        set(Calendar.HOUR_OF_DAY, 17)
+        //set(Calendar.HOUR, 0) prolly i ovo radi
+        set(Calendar.MINUTE,21)
+    }
 
     private var magnitudePrevious = 0.0
 
@@ -54,21 +53,6 @@ class StepCounterService : Service() {
 
         intent = Intent(BROADCAST_ACTION)
 
-        alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmIntent = Intent(context, RefreshReceiver::class.java)
-
-        val stepBundle = Bundle()
-        stepBundle.putParcelable("Step", step)
-
-        alarmIntent.putExtra("Step", stepBundle)
-        alarmPendingIntent = PendingIntent.getBroadcast(context,0,alarmIntent,0)
-
-        alarmMgr?.setInexactRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            alarmPendingIntent
-        )
 
     }
 
@@ -97,8 +81,6 @@ class StepCounterService : Service() {
                     magnitudePrevious = magnitude
                     if (magnitudeDelta > 6) {
                         step.stepCount++
-
-                        updateIntent()
                         initNotification()
                     }
                 }
@@ -146,46 +128,22 @@ class StepCounterService : Service() {
 
     private fun initNotification()
     {
-        val steps = step.stepCount
 
-        notification = NotificationCompat.Builder(this, "MYCHANNEL")
+        val notification = NotificationCompat.Builder(this, "MYCHANNEL")
             .setContentTitle("Pedometer")
             .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentText("Steps:" + steps.toString())
+            .setContentText("Steps:" + step.stepCount.toString())
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setOnlyAlertOnce(true)
             .setOngoing(true)
+            .build()
 
-        val notificationManager: NotificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        notificationManager.notify(172, notification.build())
-
-
+        startForeground(172, notification)
     }
+
 
     override fun stopService(name: Intent?): Boolean {
-        return super.stopService(name)
-    }
-
-    private fun updateIntent()
-    {
-
-        alarmMgr?.cancel(alarmPendingIntent)
-
-        Log.d("Step u intentu",step.toString())
-        val stepBundle = Bundle()
-        stepBundle.putParcelable("Step", step)
-
-        alarmIntent.replaceExtras(stepBundle)
-        alarmPendingIntent = PendingIntent.getBroadcast(context,0,alarmIntent,0)
-
-
-        alarmMgr?.setInexactRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            alarmPendingIntent
-        )
+        return false
     }
 
 }
