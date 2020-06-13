@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
     private val TAG: String = "MainActivityTag"
     private lateinit var textView: TextView
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)

@@ -1,6 +1,7 @@
 package android.tvz.hr.pedometer
 
 import android.app.AlarmManager
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
@@ -14,6 +15,7 @@ import android.os.IBinder
 import android.tvz.hr.pedometer.fragments.HomeFragment
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.dbflow5.config.FlowManager.context
 import java.util.*
 
@@ -186,11 +188,11 @@ class StepCounterService : Service() {
             .setSmallIcon(R.drawable.achievement_icon)
             .setContentText(MainActivity.achievements[currentAchievementId].name)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setOnlyAlertOnce(true)
-            .setOngoing(true)
+            .setOngoing(false)
             .build()
 
-        startForeground(322, notification)
+        val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(322, notification)
     }
 
     override fun stopService(name: Intent?): Boolean {
