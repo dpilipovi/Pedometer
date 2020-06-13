@@ -167,7 +167,7 @@ class StepCounterService : Service() {
 
         val notification = NotificationCompat.Builder(this, "MYCHANNEL")
             .setContentTitle("Pedometer")
-            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setSmallIcon(R.drawable.icon)
             .setContentText("Steps: $stepCount")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setOnlyAlertOnce(true)
@@ -183,7 +183,7 @@ class StepCounterService : Service() {
 
         val notification = NotificationCompat.Builder(this, "MYCHANNEL")
             .setContentTitle("Achievement done")
-            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setSmallIcon(R.drawable.achievement_icon)
             .setContentText(MainActivity.achievements[currentAchievementId].name)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setOnlyAlertOnce(true)
