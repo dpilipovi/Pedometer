@@ -41,6 +41,8 @@ dependencies {
 
     implementation 'com.dualcores.swagpoints:swagpoints:1.0.2'
 
+    implementation 'com.willowtreeapps.spruce:spruce-android:1.0.1'
+
     //DBFLOW
     // Use if Kotlin user.
     kapt "com.github.agrosner.dbflow:processor:${dbflow_version}"

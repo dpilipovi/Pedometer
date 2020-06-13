@@ -1,5 +1,6 @@
 package android.tvz.hr.pedometer.fragments
 
+import android.animation.Animator
 import android.os.Bundle
 import android.tvz.hr.pedometer.R
 import android.tvz.hr.pedometer.Step
@@ -7,21 +8,25 @@ import android.tvz.hr.pedometer.adapters.HistoryRecyclerViewAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dbflow5.query.NameAlias
 import com.dbflow5.query.list
 import com.dbflow5.query.select
-import com.dbflow5.query.update
 import kotlinx.android.synthetic.main.fragment_history.*
 
+
 class HistoryFragment : Fragment() {
+
+    private var spruceAnimator: Animator? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         return inflater.inflate(R.layout.fragment_history, container, false)
     }
 
@@ -29,12 +34,13 @@ class HistoryFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         updateHistory()
+
     }
 
     override fun onResume() {
         super.onResume()
 
-        updateHistory()
+        spruceAnimator?.start()
     }
 
     private fun updateHistory() {
@@ -42,13 +48,10 @@ class HistoryFragment : Fragment() {
 
         history_recycler_view.adapter = HistoryRecyclerViewAdapter(historyList)
         history_recycler_view.layoutManager = LinearLayoutManager(context)
+        history_recycler_view.layoutAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
         history_recycler_view.setHasFixedSize(true)
 
-        if(historyList.isEmpty()) {
-
-        }
-
-
     }
+
 
 }

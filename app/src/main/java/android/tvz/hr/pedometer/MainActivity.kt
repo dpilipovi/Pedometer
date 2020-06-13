@@ -34,13 +34,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        supportFragmentManager.beginTransaction().setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).replace(R.id.fragment_container, HomeFragment()).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, HomeFragment()).commit()
 
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
 
             var selectedFragment: Fragment? = null
-
-
 
              when(item.itemId) {
                  R.id.menu_main -> {
@@ -58,7 +56,7 @@ class MainActivity : AppCompatActivity() {
                  else -> false
              }
 
-            supportFragmentManager.beginTransaction().setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).replace(R.id.fragment_container, selectedFragment!!).commit()
+            supportFragmentManager.beginTransaction().replace(R.id.fragment_container, selectedFragment!!).commit()
 
             return@setOnNavigationItemSelectedListener true
         }
@@ -94,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         // Everything that should be called only once per app install should be put in here
         // Generate mock steps for testing purpose
         if(firstStart) {
-            //MockHistory.generateMockSteps(10)
+            MockHistory.generateMockSteps(10)
 
             val sharedPreferencesEditor: SharedPreferences.Editor = sharedPreferences.edit()
             sharedPreferencesEditor.putBoolean("firstStart", false).apply()

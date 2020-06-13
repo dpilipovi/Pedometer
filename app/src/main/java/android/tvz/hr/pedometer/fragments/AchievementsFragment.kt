@@ -8,10 +8,12 @@ import android.tvz.hr.pedometer.adapters.AchievementRecyclerViewAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import kotlinx.android.synthetic.main.fragment_achievements.*
+import kotlinx.android.synthetic.main.fragment_history.*
 
 class AchievementsFragment : Fragment() {
 
@@ -40,6 +42,7 @@ class AchievementsFragment : Fragment() {
 
         achievement_recycler_view.adapter = AchievementRecyclerViewAdapter(achievementList)
         achievement_recycler_view.layoutManager = LinearLayoutManager(context)
+        achievement_recycler_view.layoutAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
         achievement_recycler_view.setHasFixedSize(true)
     }
 
