@@ -33,9 +33,9 @@ class StepCounterService : Service() {
 
     val calendar: Calendar = Calendar.getInstance().apply {
         timeInMillis = System.currentTimeMillis()
-        set(Calendar.HOUR_OF_DAY, 17)
+        set(Calendar.HOUR_OF_DAY, 12)
         //set(Calendar.HOUR, 0) prolly i ovo radi
-        set(Calendar.MINUTE,21)
+        set(Calendar.MINUTE,42)
     }
 
     private var magnitudePrevious = 0.0
@@ -52,6 +52,23 @@ class StepCounterService : Service() {
         super.onCreate()
 
         intent = Intent(BROADCAST_ACTION)
+
+
+        alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmIntent = Intent(context, RefreshReceiver::class.java)
+
+        val stepBundle = Bundle()
+        stepBundle.putParcelable("Step", step)
+
+        alarmIntent.putExtra("Step", stepBundle)
+        alarmPendingIntent = PendingIntent.getBroadcast(context,0,alarmIntent,0)
+
+        alarmMgr?.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            alarmPendingIntent
+        )
 
 
     }
@@ -139,6 +156,26 @@ class StepCounterService : Service() {
             .build()
 
         startForeground(172, notification)
+    }
+
+    private fun updateIntent() {
+
+        alarmMgr?.cancel(alarmPendingIntent)
+
+        Log.d("Step u intentu", step.toString())
+        val stepBundle = Bundle()
+        stepBundle.putParcelable("Step", step)
+
+        alarmIntent.replaceExtras(stepBundle)
+        alarmPendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, 0)
+
+
+        alarmMgr?.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            alarmPendingIntent
+        )
     }
 
 

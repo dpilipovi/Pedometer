@@ -21,6 +21,7 @@ class RefreshReceiver : BroadcastReceiver() {
 
         Log.d("refresh service", "refreshing")
         if (data != null) {
+            data.stepCount = StepCounterService.step.stepCount
             Log.d("data", data.toString())
         }
         else Log.d("data:", "is null")
