@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.tvz.hr.pedometer.fragments.AchievementsFragment
 import android.tvz.hr.pedometer.fragments.HistoryFragment
 import android.tvz.hr.pedometer.fragments.HomeFragment
+import android.tvz.hr.pedometer.mock.MockHistory
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -71,9 +72,6 @@ class MainActivity : AppCompatActivity() {
             .openDatabasesOnInit(true)
             .build())
 
-        val intent = Intent(this, StepCounterService::class.java)
-
-        startService(intent)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) run {
             val channel = NotificationChannel(
@@ -87,7 +85,14 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        notification()
+
+        val intent = Intent(this, StepCounterService::class.java)
+
+        startService(intent)
+
+        // Generate mock steps for testing purpose
+        MockHistory.generateMockSteps(3)
+
 
     }
 
@@ -121,23 +126,5 @@ class MainActivity : AppCompatActivity() {
 
         //unregisterReceiver(broadcastReceiver)
         //stopService(intent)
-    }
-
-    private fun notification()
-    {
-        val steps = StepCounterService.step.stepCount
-
-        val notification = NotificationCompat.Builder(this, "MYCHANNEL")
-            .setContentTitle("Pedometer")
-            .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentText("Steps:" + steps.toString())
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setOnlyAlertOnce(true)
-            .setOngoing(true)
-
-        with(NotificationManagerCompat.from(this)) {
-            notify(172, notification.build())
-        }
-
     }
 }
