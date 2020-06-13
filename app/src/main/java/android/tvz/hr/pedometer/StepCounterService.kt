@@ -33,9 +33,9 @@ class StepCounterService : Service() {
 
     val calendar: Calendar = Calendar.getInstance().apply {
         timeInMillis = System.currentTimeMillis()
-        set(Calendar.HOUR_OF_DAY, 12)
+        set(Calendar.HOUR_OF_DAY, 0)
         //set(Calendar.HOUR, 0) prolly i ovo radi
-        set(Calendar.MINUTE,42)
+        //set(Calendar.MINUTE,42)
     }
 
     private var magnitudePrevious = 0.0
