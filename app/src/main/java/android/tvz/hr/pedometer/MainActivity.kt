@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment
 import com.dbflow5.config.FlowConfig
 import com.dbflow5.config.FlowManager
 import com.dbflow5.config.FlowManager.context
+import com.dbflow5.structure.save
 import kotlinx.android.synthetic.main.main_activity.*
 import java.util.*
 
@@ -93,6 +94,8 @@ class MainActivity : AppCompatActivity() {
         // Generate mock steps for testing purpose
         MockHistory.generateMockSteps(3)
 
+        initAchievemnts()
+
 
     }
 
@@ -126,5 +129,15 @@ class MainActivity : AppCompatActivity() {
 
         //unregisterReceiver(broadcastReceiver)
         //stopService(intent)
+    }
+
+     fun initAchievemnts()
+    {
+      var lista : List<Achievement> = AchievementData.createDataSet()
+
+      for (achievement in lista)
+      {
+          achievement.save()
+      }
     }
 }
