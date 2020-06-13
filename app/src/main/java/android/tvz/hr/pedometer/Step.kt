@@ -5,6 +5,7 @@ import com.dbflow5.annotation.Column
 import com.dbflow5.annotation.PrimaryKey
 import com.dbflow5.annotation.Table
 import kotlinx.android.parcel.Parcelize
+import java.time.LocalDate
 import java.util.*
 
 
