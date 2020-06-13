@@ -16,6 +16,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.dbflow5.config.FlowManager.context
+import kotlinx.android.synthetic.main.fragment_achievements.*
 import java.util.*
 
 
@@ -27,7 +28,8 @@ class StepCounterService : Service() {
       //  var stepCount: Int = 0
         var id_counter: Int = 1
         val step: Step = Step(id_counter,0, Date())
-
+        var currentAchievementId = 0
+        var changeAchievement = false
 
     }
 
@@ -98,6 +100,15 @@ class StepCounterService : Service() {
                     magnitudePrevious = magnitude
                     if (magnitudeDelta > 6) {
                         step.stepCount++
+
+                        if(step.stepCount >= MainActivity.achievements[currentAchievementId].stepCount)
+                        {
+                            achievementNotification()
+                            Log.d("proso achievement", step.stepCount.toString())
+                            currentAchievementId++
+                            changeAchievement = true
+                        }
+
                         initNotification()
                     }
                 }
@@ -156,6 +167,21 @@ class StepCounterService : Service() {
             .build()
 
         startForeground(172, notification)
+    }
+
+    private fun achievementNotification()
+    {
+
+        val notification = NotificationCompat.Builder(this, "MYCHANNEL")
+            .setContentTitle("Achievement done")
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentText(MainActivity.achievements[currentAchievementId].name)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setOnlyAlertOnce(true)
+            .setOngoing(true)
+            .build()
+
+        startForeground(322, notification)
     }
 
     private fun updateIntent() {

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.tvz.hr.pedometer.MainActivity
 import android.tvz.hr.pedometer.R
 import android.tvz.hr.pedometer.StepCounterService
 import android.view.LayoutInflater
@@ -35,11 +36,17 @@ class HomeFragment : Fragment() {
             }
         })
 
+
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     override fun onResume() {
         super.onResume()
+
+        achievement_name.text = MainActivity.achievements[StepCounterService.currentAchievementId].name
+        achievement_next_name.text = MainActivity.achievements[StepCounterService.currentAchievementId + 1].name
+        circular_steps_progress.max = MainActivity.achievements[StepCounterService.currentAchievementId].stepCount
+
         context!!.registerReceiver(broadcastReceiver, IntentFilter(StepCounterService.BROADCAST_ACTION))
 
         circular_steps_progress.points = stepCount
@@ -59,6 +66,15 @@ class HomeFragment : Fragment() {
     // gets called when accelerometer detects a step
     private fun updateUI(intent: Intent) {
         val counter: Int = intent.getIntExtra("counter",  0)
+
+        if(StepCounterService.changeAchievement)
+        {
+            StepCounterService.changeAchievement = false
+            achievement_name.text = MainActivity.achievements[StepCounterService.currentAchievementId].name
+            achievement_next_name.text = MainActivity.achievements[StepCounterService.currentAchievementId + 1].name
+            circular_steps_progress.max = MainActivity.achievements[StepCounterService.currentAchievementId +1].stepCount
+
+        }
 
         stepCount = counter;
 

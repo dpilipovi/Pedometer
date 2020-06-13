@@ -15,7 +15,7 @@ class AchievementData {
             )
             list.add(
                 Achievement(
-                    1,
+                    2,
                     1000,
                     "Grandma level"
                 )
@@ -23,30 +23,30 @@ class AchievementData {
 
             list.add(
                 Achievement(
-                    1,
+                    3,
                     2500,
                     "You`re still pathetic"
                 )
             )
             list.add(
                 Achievement(
-                    1,
+                    4,
                     5000,
-                    "Halfway done, hope you`re not tired"
+                    "Less pathetic"
                 )
             )
             list.add(
                 Achievement(
-                    1,
+                    5,
                     10000,
-                    "You can stop if you must, wimp "
+                    "AverageMan"
                 )
             )
             list.add(
                 Achievement(
-                    1,
+                    6,
                     100000,
-                    "Oficially insane | cheater"
+                    "Officially insane | cheater"
                 )
             )
             return list

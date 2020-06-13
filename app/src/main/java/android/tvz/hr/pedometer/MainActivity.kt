@@ -22,6 +22,7 @@ import com.dbflow5.config.FlowConfig
 import com.dbflow5.config.FlowManager
 import com.dbflow5.config.FlowManager.context
 import com.dbflow5.structure.save
+import kotlinx.android.synthetic.main.fragment_achievements.*
 import kotlinx.android.synthetic.main.main_activity.*
 import java.util.*
 
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var active = false
+        var achievements: List<Achievement> = AchievementData.createDataSet()
     }
 
     private val TAG: String = "MainActivityTag"
@@ -94,7 +96,9 @@ class MainActivity : AppCompatActivity() {
         // Generate mock steps for testing purpose
         MockHistory.generateMockSteps(3)
 
-        initAchievemnts()
+
+//        achievement_name.text="Baby steps"
+  //      achievement_next_name.text="Grandma level (1000)"
 
 
     }
@@ -131,13 +135,16 @@ class MainActivity : AppCompatActivity() {
         //stopService(intent)
     }
 
-     fun initAchievemnts()
+  /*   fun initAchievemnts()
     {
-      var lista : List<Achievement> = AchievementData.createDataSet()
+     achievements = AchievementData.createDataSet()
 
-      for (achievement in lista)
+     for (achievement in achievements)
       {
           achievement.save()
       }
-    }
+    }*/
+
+
 }
+
