@@ -40,7 +40,7 @@ class StepCounterService : Service() {
 
     private var magnitudePrevious = 0.0
 
-    lateinit var intent: Intent
+    private lateinit var intent: Intent
 
     var handler: Handler = Handler()
 
