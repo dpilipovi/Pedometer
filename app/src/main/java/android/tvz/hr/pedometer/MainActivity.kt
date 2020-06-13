@@ -1,12 +1,11 @@
 package android.tvz.hr.pedometer
 
 
-import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.tvz.hr.pedometer.fragments.AchievementsFragment
@@ -89,12 +88,22 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        val sharedPreferences: SharedPreferences = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val firstStart: Boolean = sharedPreferences.getBoolean("firstStart", true)
+
+
         val intent = Intent(this, StepCounterService::class.java)
 
         startService(intent)
 
+        // Everything that should be called only once per app install should be put in here
         // Generate mock steps for testing purpose
-        MockHistory.generateMockSteps(3)
+        if(firstStart) {
+            MockHistory.generateMockSteps(10)
+
+            val sharedPreferencesEditor: SharedPreferences.Editor = sharedPreferences.edit()
+            sharedPreferencesEditor.putBoolean("firstStart", false).apply()
+        }
 
 
 //        achievement_name.text="Baby steps"
