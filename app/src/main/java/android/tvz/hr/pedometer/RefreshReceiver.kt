@@ -13,34 +13,19 @@ import java.util.*
 
 class RefreshReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        val db = databaseForTable<Step>()
 
-
-        val stepBundle = intent!!.getBundleExtra("Step")
-        var data: Step? = stepBundle.getParcelable("Step")
-
-        Log.d("refresh service", "refreshing")
-        if (data != null) {
-            data.stepCount = StepCounterService.step.stepCount
-            Log.d("data", data.toString())
-        }
-        else Log.d("data:", "is null")
-
-        if (data != null) {
-            data.save(db)
-            StepCounterService.step.id++
-            StepCounterService.step.stepCount=0
-            StepCounterService.step.date = Date()
-
-            Log.d("add to database", "and refreshing")
+            Step(StepCounterService.id_counter, StepCounterService.stepCount, StepCounterService.date).save()
+            StepCounterService.id_counter++
+            StepCounterService.stepCount=0
+            StepCounterService.date = Date()
 
             val results = (select from Step::class.java).list
 
-           for(result in results)
-           {
+            for(result in results)
+            {
                println(result.toString())
-           }
-        }
+            }
+
     }
 
 }

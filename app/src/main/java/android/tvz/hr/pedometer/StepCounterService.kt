@@ -25,20 +25,16 @@ class StepCounterService : Service() {
     companion object {
         const val BROADCAST_ACTION: String = "android.tvz.hr.pedometer.displaySteps"
         var active = false
-      //  var stepCount: Int = 0
+
         var id_counter: Int = 1
-        val step: Step = Step(id_counter,0, Date())
+        var stepCount: Int = 0
+        var date: Date = Date()
+
         var currentAchievementId = 0
         var changeAchievement = false
 
     }
 
-    val calendar: Calendar = Calendar.getInstance().apply {
-        timeInMillis = System.currentTimeMillis()
-        set(Calendar.HOUR_OF_DAY, 0)
-        //set(Calendar.HOUR, 0) prolly i ovo radi
-        //set(Calendar.MINUTE,42)
-    }
 
     private var magnitudePrevious = 0.0
 
@@ -55,14 +51,21 @@ class StepCounterService : Service() {
 
         intent = Intent(BROADCAST_ACTION)
 
+        val calendar: Calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            //set(Calendar.HOUR, 0) prolly i ovo radi
+            //set(Calendar.MINUTE,42)
+        }
+
+        if(Calendar.getInstance().after(calendar)) {
+            calendar.add(Calendar.DATE, 1)
+        }
 
         alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmIntent = Intent(context, RefreshReceiver::class.java)
 
-        val stepBundle = Bundle()
-        stepBundle.putParcelable("Step", step)
-
-        alarmIntent.putExtra("Step", stepBundle)
         alarmPendingIntent = PendingIntent.getBroadcast(context,0,alarmIntent,0)
 
         alarmMgr?.setInexactRepeating(
@@ -71,6 +74,8 @@ class StepCounterService : Service() {
             AlarmManager.INTERVAL_DAY,
             alarmPendingIntent
         )
+
+
 
 
     }
@@ -99,12 +104,12 @@ class StepCounterService : Service() {
                     val magnitudeDelta = magnitude - magnitudePrevious
                     magnitudePrevious = magnitude
                     if (magnitudeDelta > 6) {
-                        step.stepCount++
+                        stepCount++
 
-                        if(step.stepCount >= MainActivity.achievements[currentAchievementId].stepCount)
+                        if(stepCount >= MainActivity.achievements[currentAchievementId].stepCount)
                         {
                             achievementNotification()
-                            Log.d("proso achievement", step.stepCount.toString())
+                            Log.d("proso achievement", stepCount.toString())
                             currentAchievementId++
                             changeAchievement = true
                         }
@@ -141,7 +146,7 @@ class StepCounterService : Service() {
 
     private fun displayLoggingInfo() {
 
-        intent.putExtra("counter", step.stepCount)
+        intent.putExtra("counter", stepCount)
         sendBroadcast(intent)
     }
 
@@ -156,11 +161,10 @@ class StepCounterService : Service() {
 
     private fun initNotification()
     {
-
         val notification = NotificationCompat.Builder(this, "MYCHANNEL")
             .setContentTitle("Pedometer")
             .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentText("Steps:" + step.stepCount.toString())
+            .setContentText("Steps: $stepCount")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setOnlyAlertOnce(true)
             .setOngoing(true)
@@ -183,27 +187,6 @@ class StepCounterService : Service() {
 
         startForeground(322, notification)
     }
-
-    private fun updateIntent() {
-
-        alarmMgr?.cancel(alarmPendingIntent)
-
-        Log.d("Step u intentu", step.toString())
-        val stepBundle = Bundle()
-        stepBundle.putParcelable("Step", step)
-
-        alarmIntent.replaceExtras(stepBundle)
-        alarmPendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, 0)
-
-
-        alarmMgr?.setInexactRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            alarmPendingIntent
-        )
-    }
-
 
     override fun stopService(name: Intent?): Boolean {
         return false

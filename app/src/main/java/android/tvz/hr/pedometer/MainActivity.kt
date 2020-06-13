@@ -14,17 +14,10 @@ import android.tvz.hr.pedometer.fragments.HomeFragment
 import android.tvz.hr.pedometer.mock.MockHistory
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import com.dbflow5.config.FlowConfig
 import com.dbflow5.config.FlowManager
-import com.dbflow5.config.FlowManager.context
-import com.dbflow5.structure.save
-import kotlinx.android.synthetic.main.fragment_achievements.*
 import kotlinx.android.synthetic.main.main_activity.*
-import java.util.*
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -99,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         // Everything that should be called only once per app install should be put in here
         // Generate mock steps for testing purpose
         if(firstStart) {
-            MockHistory.generateMockSteps(10)
+            //MockHistory.generateMockSteps(10)
 
             val sharedPreferencesEditor: SharedPreferences.Editor = sharedPreferences.edit()
             sharedPreferencesEditor.putBoolean("firstStart", false).apply()

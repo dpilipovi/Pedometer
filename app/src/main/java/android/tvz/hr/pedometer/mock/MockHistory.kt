@@ -8,17 +8,16 @@ import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 class MockHistory {
-
     companion object {
         fun generateMockSteps(numSteps: Int) {
-            var id_counter = StepCounterService.step.id
+            var id_counter = StepCounterService.id_counter
 
             val steps: ArrayList<Step> = ArrayList()
 
             for (i in 1..numSteps) {
                 steps.add(Step(id_counter, Random.nextInt(1000, 5000), Date(Date().time - (i * 24 * 3600 * 1000).toLong())))
-                StepCounterService.step.id++
-                id_counter = StepCounterService.step.id
+                StepCounterService.id_counter++
+                id_counter = StepCounterService.id_counter
             }
             steps.forEach { step ->
                 step.save()
