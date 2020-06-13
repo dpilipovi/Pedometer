@@ -1,7 +1,6 @@
 package android.tvz.hr.pedometer
 
 import android.app.AlarmManager
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
@@ -10,13 +9,12 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
+import android.tvz.hr.pedometer.fragments.HomeFragment
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.dbflow5.config.FlowManager.context
-import kotlinx.android.synthetic.main.fragment_achievements.*
 import java.util.*
 
 
@@ -161,13 +159,20 @@ class StepCounterService : Service() {
 
     private fun initNotification()
     {
+        val intent2 = Intent(this,MainActivity::class.java)
+
+        val pendingIntent2 = PendingIntent.getActivity(this,
+            0,intent2,PendingIntent.FLAG_UPDATE_CURRENT)
+
+
         val notification = NotificationCompat.Builder(this, "MYCHANNEL")
             .setContentTitle("Pedometer")
-            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setSmallIcon(R.drawable.icon)
             .setContentText("Steps: $stepCount")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setOnlyAlertOnce(true)
             .setOngoing(true)
+            .setContentIntent(pendingIntent2)
             .build()
 
         startForeground(172, notification)
@@ -178,7 +183,7 @@ class StepCounterService : Service() {
 
         val notification = NotificationCompat.Builder(this, "MYCHANNEL")
             .setContentTitle("Achievement done")
-            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setSmallIcon(R.drawable.achievement_icon)
             .setContentText(MainActivity.achievements[currentAchievementId].name)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setOnlyAlertOnce(true)
