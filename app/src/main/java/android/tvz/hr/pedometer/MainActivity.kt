@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, HomeFragment()).commit()
+        supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).replace(R.id.fragment_container, HomeFragment()).commit()
 
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
 
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
                  else -> false
              }
 
-            supportFragmentManager.beginTransaction().replace(R.id.fragment_container, selectedFragment!!).commit()
+            supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).replace(R.id.fragment_container, selectedFragment!!).commit()
 
             return@setOnNavigationItemSelectedListener true
         }
