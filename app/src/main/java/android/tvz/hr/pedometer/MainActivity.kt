@@ -34,11 +34,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, HomeFragment()).commit()
+        supportFragmentManager.beginTransaction().setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).replace(R.id.fragment_container, HomeFragment()).commit()
 
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
 
             var selectedFragment: Fragment? = null
+
+
 
              when(item.itemId) {
                  R.id.menu_main -> {
@@ -56,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                  else -> false
              }
 
-            supportFragmentManager.beginTransaction().replace(R.id.fragment_container, selectedFragment!!).commit()
+            supportFragmentManager.beginTransaction().setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).replace(R.id.fragment_container, selectedFragment!!).commit()
 
             return@setOnNavigationItemSelectedListener true
         }
@@ -104,6 +106,8 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
+    //private fun replaceFragmentWithAnimation(fragment: Fragment, )
 
     override fun onResume() {
         super.onResume()

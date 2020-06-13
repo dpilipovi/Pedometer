@@ -1,0 +1,82 @@
+Index: app/src/main/java/android/tvz/hr/pedometer/fragments/HistoryFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package android.tvz.hr.pedometer.fragments\r\n\r\nimport android.os.Bundle\r\nimport android.tvz.hr.pedometer.R\r\nimport android.tvz.hr.pedometer.Step\r\nimport android.tvz.hr.pedometer.adapters.HistoryRecyclerViewAdapter\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport androidx.fragment.app.Fragment\r\nimport androidx.recyclerview.widget.LinearLayoutManager\r\nimport com.dbflow5.query.NameAlias\r\nimport com.dbflow5.query.list\r\nimport com.dbflow5.query.select\r\nimport com.dbflow5.query.update\r\nimport kotlinx.android.synthetic.main.fragment_history.*\r\n\r\nclass HistoryFragment : Fragment() {\r\n\r\n    override fun onCreateView(\r\n        inflater: LayoutInflater,\r\n        container: ViewGroup?,\r\n        savedInstanceState: Bundle?\r\n    ): View? {\r\n        return inflater.inflate(R.layout.fragment_history, container, false)\r\n    }\r\n\r\n    override fun onActivityCreated(savedInstanceState: Bundle?) {\r\n        super.onActivityCreated(savedInstanceState)\r\n\r\n        updateHistory()\r\n    }\r\n\r\n    override fun onResume() {\r\n        super.onResume()\r\n\r\n        updateHistory()\r\n    }\r\n\r\n    private fun updateHistory() {\r\n        val historyList: List<Step> = (select from Step::class.java).orderBy(nameAlias = NameAlias(\"date\"), ascending = false).list\r\n\r\n        if(historyList.isEmpty()) {\r\n\r\n        }\r\n        else {\r\n            history_recycler_view.adapter = HistoryRecyclerViewAdapter(historyList)\r\n            history_recycler_view.layoutManager = LinearLayoutManager(context)\r\n            history_recycler_view.setHasFixedSize(true)\r\n        }\r\n\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/android/tvz/hr/pedometer/fragments/HistoryFragment.kt	(revision 7cef67f0e1177309d0c2000ec4b143e2081973ad)
++++ app/src/main/java/android/tvz/hr/pedometer/fragments/HistoryFragment.kt	(date 1592059014617)
+@@ -40,14 +40,14 @@
+     private fun updateHistory() {
+         val historyList: List<Step> = (select from Step::class.java).orderBy(nameAlias = NameAlias("date"), ascending = false).list
+ 
+-        if(historyList.isEmpty()) {
+-
+-        }
+-        else {
+-            history_recycler_view.adapter = HistoryRecyclerViewAdapter(historyList)
+-            history_recycler_view.layoutManager = LinearLayoutManager(context)
+-            history_recycler_view.setHasFixedSize(true)
++        history_recycler_view.adapter = HistoryRecyclerViewAdapter(historyList)
++        history_recycler_view.layoutManager = LinearLayoutManager(context)
++        history_recycler_view.setHasFixedSize(true)
++
++        if(historyList.isEmpty()) {
++
+         }
++
+ 
+     }
+ 
+Index: app/src/main/java/android/tvz/hr/pedometer/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package android.tvz.hr.pedometer\r\n\r\n\r\nimport android.app.NotificationChannel\r\nimport android.app.NotificationManager\r\nimport android.content.Context\r\nimport android.content.Intent\r\nimport android.content.SharedPreferences\r\nimport android.os.Build\r\nimport android.os.Bundle\r\nimport android.tvz.hr.pedometer.fragments.AchievementsFragment\r\nimport android.tvz.hr.pedometer.fragments.HistoryFragment\r\nimport android.tvz.hr.pedometer.fragments.HomeFragment\r\nimport android.tvz.hr.pedometer.mock.MockHistory\r\nimport android.widget.TextView\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport androidx.fragment.app.Fragment\r\nimport com.dbflow5.config.FlowConfig\r\nimport com.dbflow5.config.FlowManager\r\nimport kotlinx.android.synthetic.main.main_activity.*\r\n\r\nclass MainActivity : AppCompatActivity() {\r\n\r\n    companion object {\r\n        var active = false\r\n        var achievements: List<Achievement> = AchievementData.createDataSet()\r\n    }\r\n\r\n    private val TAG: String = \"MainActivityTag\"\r\n    private lateinit var textView: TextView\r\n\r\n\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        setContentView(R.layout.main_activity)\r\n\r\n        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, HomeFragment()).commit()\r\n\r\n        bottom_navigation.setOnNavigationItemSelectedListener { item ->\r\n\r\n            var selectedFragment: Fragment? = null\r\n\r\n             when(item.itemId) {\r\n                 R.id.menu_main -> {\r\n                     selectedFragment = HomeFragment()\r\n                     true\r\n                 }\r\n                 R.id.menu_achievements -> {\r\n                     selectedFragment = AchievementsFragment()\r\n                     true\r\n                 }\r\n                 R.id.menu_history -> {\r\n                     selectedFragment = HistoryFragment()\r\n                     true\r\n                 }\r\n                 else -> false\r\n             }\r\n\r\n            supportFragmentManager.beginTransaction().replace(R.id.fragment_container, selectedFragment!!).commit()\r\n\r\n            return@setOnNavigationItemSelectedListener true\r\n        }\r\n\r\n        // Initialize DBFlow\r\n        FlowManager.init(\r\n            FlowConfig.builder(this)\r\n            .openDatabasesOnInit(true)\r\n            .build())\r\n\r\n\r\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) run {\r\n            val channel = NotificationChannel(\r\n                \"MYCHANNEL\",\r\n                \"Notification channel\",\r\n                NotificationManager.IMPORTANCE_DEFAULT\r\n            )\r\n            channel.description = \"Channel Description\"\r\n            val man = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager\r\n            man.createNotificationChannel(channel)\r\n\r\n        }\r\n\r\n\r\n        val sharedPreferences: SharedPreferences = getSharedPreferences(\"prefs\", Context.MODE_PRIVATE)\r\n        val firstStart: Boolean = sharedPreferences.getBoolean(\"firstStart\", true)\r\n\r\n\r\n        val intent = Intent(this, StepCounterService::class.java)\r\n\r\n        startService(intent)\r\n\r\n        // Everything that should be called only once per app install should be put in here\r\n        // Generate mock steps for testing purpose\r\n        if(firstStart) {\r\n            //MockHistory.generateMockSteps(10)\r\n\r\n            val sharedPreferencesEditor: SharedPreferences.Editor = sharedPreferences.edit()\r\n            sharedPreferencesEditor.putBoolean(\"firstStart\", false).apply()\r\n        }\r\n\r\n\r\n//        achievement_name.text=\"Baby steps\"\r\n  //      achievement_next_name.text=\"Grandma level (1000)\"\r\n\r\n\r\n    }\r\n\r\n    override fun onResume() {\r\n        super.onResume()\r\n        active = true\r\n\r\n        //startService(intent)\r\n        //\r\n\r\n        if(!StepCounterService.active) {\r\n            startService(intent)\r\n        }\r\n    }\r\n\r\n    override fun onPause() {\r\n        super.onPause()\r\n        active = false\r\n    }\r\n\r\n    override fun onStop() {\r\n        super.onStop()\r\n        active = false\r\n\r\n        // Maybe do something\r\n    }\r\n\r\n    override fun onDestroy() {\r\n        super.onDestroy()\r\n        active = false\r\n\r\n        //unregisterReceiver(broadcastReceiver)\r\n        //stopService(intent)\r\n    }\r\n\r\n  /*   fun initAchievemnts()\r\n    {\r\n     achievements = AchievementData.createDataSet()\r\n\r\n     for (achievement in achievements)\r\n      {\r\n          achievement.save()\r\n      }\r\n    }*/\r\n\r\n\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/android/tvz/hr/pedometer/MainActivity.kt	(revision 7cef67f0e1177309d0c2000ec4b143e2081973ad)
++++ app/src/main/java/android/tvz/hr/pedometer/MainActivity.kt	(date 1592058961011)
+@@ -36,10 +36,15 @@
+ 
+         supportFragmentManager.beginTransaction().replace(R.id.fragment_container, HomeFragment()).commit()
+ 
++        val fragmentManager = supportFragmentManager.beginTransaction()
++        fragmentManager.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
++
+         bottom_navigation.setOnNavigationItemSelectedListener { item ->
+ 
+             var selectedFragment: Fragment? = null
+ 
++
++
+              when(item.itemId) {
+                  R.id.menu_main -> {
+                      selectedFragment = HomeFragment()
+@@ -105,6 +110,8 @@
+ 
+     }
+ 
++    //private fun replaceFragmentWithAnimation(fragment: Fragment, )
++
+     override fun onResume() {
+         super.onResume()
+         active = true
+Index: app/src/main/res/animator/fragment_transition.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/animator/fragment_transition.xml	(date 1592058575054)
++++ app/src/main/res/animator/fragment_transition.xml	(date 1592058575054)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="utf-8"?>
++<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
++    android:interpolator="@android:interpolator/accelerate_quad"
++    android:valueFrom="0"
++    android:valueTo="1"
++    android:propertyName="alpha"
++    android:duration="@android:integer/config_mediumAnimTime"
++    />
+\ No newline at end of file

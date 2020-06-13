@@ -40,14 +40,14 @@ class HistoryFragment : Fragment() {
     private fun updateHistory() {
         val historyList: List<Step> = (select from Step::class.java).orderBy(nameAlias = NameAlias("date"), ascending = false).list
 
+        history_recycler_view.adapter = HistoryRecyclerViewAdapter(historyList)
+        history_recycler_view.layoutManager = LinearLayoutManager(context)
+        history_recycler_view.setHasFixedSize(true)
+
         if(historyList.isEmpty()) {
 
         }
-        else {
-            history_recycler_view.adapter = HistoryRecyclerViewAdapter(historyList)
-            history_recycler_view.layoutManager = LinearLayoutManager(context)
-            history_recycler_view.setHasFixedSize(true)
-        }
+
 
     }
 
